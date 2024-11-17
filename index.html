@@ -37,6 +37,21 @@
           </button>
         </div>
       </nav>
+      <br />
+
+      <div class="filter-section" v-if="!checkoutPage">
+        <label for="sort-by">Sort By:</label>
+        <select v-model="sortCategory">
+          <option value="price">Price</option>
+          <option value="location">Location</option>
+          <option value="availability">Availability</option>
+          <option value="name">Name</option>
+        </select>
+        <select v-model="sortOrder">
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
       <main v-if="!checkoutPage">
         <div class="products-grid">
           <div
@@ -79,6 +94,9 @@
         el: "#app",
         data: {
           sitename: "After School Club",
+          searchQuery: "",
+          sortCategory: "price",
+          sortOrder: "asc",
           products: [
             {
               id: 101,
@@ -181,6 +199,49 @@
               rating: 4,
             },
           ],
+          computed: {
+            filteredProducts() {
+              return this.products.filter((product) => {
+                return (
+                  product.subject
+                    .toLowerCase()
+                    .includes(this.searchQuery.toLowerCase()) ||
+                  product.title
+                    .toLowerCase()
+                    .includes(this.searchQuery.toLowerCase())
+                );
+              });
+            },
+            sortedProducts() {
+              let products = this.filteredProducts.slice();
+              if (this.sortCategory === "price") {
+                products.sort((a, b) =>
+                  this.sortOrder === "asc"
+                    ? a.price - b.price
+                    : b.price - a.price
+                );
+              } else if (this.sortCategory === "availability") {
+                products.sort((a, b) =>
+                  this.sortOrder === "asc"
+                    ? a.AvailableInventory - b.AvailableInventory
+                    : b.AvailableInventory - a.AvailableInventory
+                );
+              } else if (this.sortCategory === "location") {
+                products.sort((a, b) =>
+                  this.sortOrder === "asc"
+                    ? a.location.localeCompare(b.location)
+                    : b.location.localeCompare(a.location)
+                );
+              } else if (this.sortCategory === "name") {
+                products.sort((a, b) =>
+                  this.sortOrder === "asc"
+                    ? a.subject.localeCompare(b.subject)
+                    : b.subject.localeCompare(a.subject)
+                );
+              }
+              return products;
+            },
+          },
         },
       });
     </script>
