@@ -376,6 +376,43 @@
           },
           },
         },
+        methods: {
+          canAddToCart(product) {
+            return product.AvailableInventory > 0;
+          },
+          addToCart(product) {
+            if (this.canAddToCart(product)) {
+              this.cart.push(product);
+              product.AvailableInventory--;
+              this.cartitemcount = this.cart.length;
+              this.calculateTotalPrice();
+            }
+          },
+          removeFromCart(index) {
+            let product = this.cart[index];
+            product.AvailableInventory++;
+            this.cart.splice(index, 1);
+            this.cartitemcount = this.cart.length;
+            this.calculateTotalPrice();
+          },
+          calculateTotalPrice() {
+            this.totalPrice = this.cart.reduce(
+              (sum, item) => sum + item.price,
+              0
+            );
+          },
+          toggleCheckout() {
+            this.checkoutPage = !this.checkoutPage;
+          },
+          submitOrder() {
+            this.showPopup = true;
+            this.popupMessage = "Order placed successfully!";
+            setTimeout(() => {
+              this.showPopup = false;
+              this.checkoutPage = false; // Optionally close checkout after order
+            }, 3000);
+          },
+        },
       });
     </script>
   </body>
