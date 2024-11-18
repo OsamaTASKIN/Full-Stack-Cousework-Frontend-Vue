@@ -9,7 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     />
-    <title>School Activities Club Frontend</title>
+    <title>After School Club</title>
   </head>
   <body>
     <div id="app">
@@ -52,6 +52,7 @@
           <option value="desc">Descending</option>
         </select>
       </div>
+
       <main v-if="!checkoutPage">
         <div class="products-grid">
           <div
@@ -88,6 +89,7 @@
           </div>
         </div>
       </main>
+
       <div v-if="checkoutPage" class="checkout-div">
         <div class="checkout-container">
           <div class="input-fields">
@@ -164,6 +166,7 @@
             <p><strong>Gift:</strong> {{ order.gift ? 'Yes' : 'No' }}</p>
             <p><strong>Method:</strong> {{ order.method }}</p>
           </div>
+
           <div class="cart-summary">
             <h3>Cart Summary</h3>
             <div v-for="(item, index) in cart" :key="item.id" class="item">
@@ -185,8 +188,12 @@
               Place Order
             </button>
           </div>
+        </div>
+      </div>
 
+      <div v-if="showPopup" class="popup">{{ popupMessage }}</div>
     </div>
+
     <script>
       var AfterSchoolClub = new Vue({
         el: "#app",
@@ -296,9 +303,8 @@
               AvailableInventory: 5,
               rating: 4,
             },
-
-            
           ],
+          cart: [],
           order: {
             firstName: "",
             lastName: "",
@@ -320,49 +326,48 @@
           checkoutPage: false,
           showPopup: false,
           popupMessage: "",
-          computed: {
-            filteredProducts() {
-              return this.products.filter((product) => {
-                return (
-                  product.subject
-                    .toLowerCase()
-                    .includes(this.searchQuery.toLowerCase()) ||
-                  product.title
-                    .toLowerCase()
-                    .includes(this.searchQuery.toLowerCase())
-                );
-              });
-            },
-            sortedProducts() {
-              let products = this.filteredProducts.slice();
-              if (this.sortCategory === "price") {
-                products.sort((a, b) =>
-                  this.sortOrder === "asc"
-                    ? a.price - b.price
-                    : b.price - a.price
-                );
-              } else if (this.sortCategory === "availability") {
-                products.sort((a, b) =>
-                  this.sortOrder === "asc"
-                    ? a.AvailableInventory - b.AvailableInventory
-                    : b.AvailableInventory - a.AvailableInventory
-                );
-              } else if (this.sortCategory === "location") {
-                products.sort((a, b) =>
-                  this.sortOrder === "asc"
-                    ? a.location.localeCompare(b.location)
-                    : b.location.localeCompare(a.location)
-                );
-              } else if (this.sortCategory === "name") {
-                products.sort((a, b) =>
-                  this.sortOrder === "asc"
-                    ? a.subject.localeCompare(b.subject)
-                    : b.subject.localeCompare(a.subject)
-                );
-              }
-              return products;
-            },
-            isOrderComplete() {
+        },
+        computed: {
+          filteredProducts() {
+            return this.products.filter((product) => {
+              return (
+                product.subject
+                  .toLowerCase()
+                  .includes(this.searchQuery.toLowerCase()) ||
+                product.title
+                  .toLowerCase()
+                  .includes(this.searchQuery.toLowerCase())
+              );
+            });
+          },
+          sortedProducts() {
+            let products = this.filteredProducts.slice();
+            if (this.sortCategory === "price") {
+              products.sort((a, b) =>
+                this.sortOrder === "asc" ? a.price - b.price : b.price - a.price
+              );
+            } else if (this.sortCategory === "availability") {
+              products.sort((a, b) =>
+                this.sortOrder === "asc"
+                  ? a.AvailableInventory - b.AvailableInventory
+                  : b.AvailableInventory - a.AvailableInventory
+              );
+            } else if (this.sortCategory === "location") {
+              products.sort((a, b) =>
+                this.sortOrder === "asc"
+                  ? a.location.localeCompare(b.location)
+                  : b.location.localeCompare(a.location)
+              );
+            } else if (this.sortCategory === "name") {
+              products.sort((a, b) =>
+                this.sortOrder === "asc"
+                  ? a.subject.localeCompare(b.subject)
+                  : b.subject.localeCompare(a.subject)
+              );
+            }
+            return products;
+          },
+          isOrderComplete() {
             return (
               this.order.firstName &&
               this.order.lastName &&
@@ -373,7 +378,6 @@
               this.order.phone &&
               this.order.method
             );
-          },
           },
         },
         methods: {
