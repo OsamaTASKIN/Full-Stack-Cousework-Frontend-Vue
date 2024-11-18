@@ -330,13 +330,11 @@
         computed: {
           filteredProducts() {
             return this.products.filter((product) => {
+              const searchQuery = this.searchQuery.toLowerCase();
               return (
-                product.subject
-                  .toLowerCase()
-                  .includes(this.searchQuery.toLowerCase()) ||
-                product.title
-                  .toLowerCase()
-                  .includes(this.searchQuery.toLowerCase())
+                product.subject.toLowerCase().includes(searchQuery) ||
+                product.title.toLowerCase().includes(searchQuery) ||
+                product.location.toLowerCase().includes(searchQuery)
               );
             });
           },
@@ -413,7 +411,7 @@
             this.popupMessage = "Order placed successfully!";
             setTimeout(() => {
               this.showPopup = false;
-              this.checkoutPage = false; // Optionally close checkout after order
+              this.checkoutPage = false;
             }, 3000);
           },
         },
